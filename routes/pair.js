@@ -129,28 +129,28 @@ router.get('/', async (req, res) => {
                             try {
                                 Sess = await sendButtons(Gifted, Gifted.user.id, {
             title: '',
-            text: 'Shadow-Xtech~' + b64data,
-            footer: `> *Shadow-Xtech 2026*`,
+            text: 'POPKID~;;;' + b64data,
+            footer: `> *POPKID MD 2026*`,
             buttons: [
                 { 
                     name: 'cta_copy', 
                     buttonParamsJson: JSON.stringify({ 
                         display_text: 'Copy Session', 
-                        copy_code: 'Shadow-Xtech~' + b64data 
+                        copy_code: 'POPKID~;;;' + b64data 
                     }) 
                 },
                 {
                     name: 'cta_url',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Visit Bot Repo',
-                        url: 'https://github.com/Tappy-TechX/Shadow-Xtech'
+                        url: 'https://github.com/popkidmd/POPKID-MD'
                     })
                 },
                 {
                     name: 'cta_url',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Join WaChannel',
-                        url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10'
+                        url: 'https://whatsapp.com/channel/0029VacgxK96hENmSRMRxx1r'
                     })
                 }
             ]

@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
                             <!DOCTYPE html>
                             <html>
                             <head>
-                                <title>SHADOW-XTECH | QR CODE</title>
+                                <title>POPKID-MD | QR CODE</title>
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                                 <style>
                                     body {
@@ -162,7 +162,7 @@ router.get('/', async (req, res) => {
                             </head>
                             <body>
                                 <div class="container">
-                                    <h1>SHADOW-XTECH QR CODE</h1>
+                                    <h1>POPKID QR CODE</h1>
                                     <div class="qr-container">
                                         <div class="qr-code pulse">
                                             <img src="${qrImage}" alt="QR Code"/>
@@ -191,7 +191,7 @@ router.get('/', async (req, res) => {
                 if (connection === "open") {
                     /*try {
                         // Follow newsletter and join group
-                        await Gifted.newsletterFollow("120363369453603973@newsletter");
+                        await Gifted.newsletterFollow("120363408839929349@newsletter");
                         await Gifted.groupAcceptInvite("GiD4BYjebncLvhr0J2SHAg");
                     } catch (error) {
                         console.error("Newsletter/group error:", error);
@@ -232,51 +232,34 @@ router.get('/', async (req, res) => {
                         let b64data = compressedData.toString('base64');
 
                             const Sess = await Gifted.sendMessage(Gifted.user.id, { 
-                            text: 'Shadow-Xtech~' + b64data
+                            text: 'POPKID~;;;' + b64data
                         });
 
                         let GIFTED_TEXT = `
-*🔍 SYSTEM ID : » #𝙓-𝙏𝙀𝘾𝙃-
-🧠 CORE ENGINE : » Shadow-Node™ vX.1 ⚙️
-🛡️ STATUS : » [ ✅ LINKED | 🔐 ENCRYPTED ]
-⏱️ UPTIME : » 💯 Synchronized  · Clear · Online 
+*✅sᴇssɪᴏɴ ɪᴅ ɢᴇɴᴇʀᴀᴛᴇᴅ✅*
 
-⎾====================================⏌
-  📡 SYSTEM MODULES — STATUS
-  ─────────────────────────
-  ◉ Boot Protocol  » 🔒 LOCKED
-  ◉ SecureNode™    » 🟢 ONLINE
-  ◉ GhostLink AI   » ⚡ ACTIVE
-  ◉ Neural Sync    » 🧬 ENABLED
-⎿====================================⏋
+╔═════◇
+║ 『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
+║❒ 𝐓𝐮𝐭𝐨𝐫𝐢𝐚𝐥: _youtube.com/@kenyanpopkid_
+║❒ 𝐎𝐰𝐧𝐞𝐫: _https://t.me/kenyanpopkid_
+║❒ 𝐑𝐞𝐩𝐨: _https://github.com/kenyanpopkid/POPKID-XTR_
+║❒ 𝐖𝐚𝐂𝐡𝐚𝐧𝐧𝐞𝐥: _https://whatsapp.com/channel/0029VbBTlzoLtOjGXhhD4I2d_
+║ 💜💜💜
+╚══════════════╝ 
 
-🧭 ACCESS PORTAL LINKS
-
-📢  Channel Uplink :  
- ╰ ⌲ 🔗 [Enter Here](https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10)
-
-👨‍💻  Developer Console (Tappy) :  
- ╰ ⌲    💬 [Message Admin](https://wa.me/254756360306)
-
-🌟  Git Integration :  
- ╰ ⌲   🛰️ [Star Project](https://github.com/Tappy-TechX/Shadow-Xtech)
-
-📄 NOTICE:
-  ⚠️ This session is unique & encrypted.
-  ❌ Do NOT share the code or file.
-  ✅ Securely uploaded to MEGA servers.
-> ⎾🧬 POWERED BY BLACK-TAPPY™⏌  `;
+Use the Quoted Session ID to Deploy your Bot.
+                        `;
 
                         const giftedMess = {
-                            image: { url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10 },
+                            image: { url: 'https://i.ibb.co/fTCrW08/373b5c2300fc0f90e39b3797f2db358b.jpg' },
                             caption: GIFTED_TEXT,
                             contextInfo: {
                                 mentionedJid: [Gifted.user.id],
                                 forwardingScore: 5,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363369453603973@newsletter',
-                                    newsletterName: "Sʜᴀᴅᴏᴡ-Xᴛᴇᴄʜ",
+                                    newsletterJid: '120363419140572186@newsletter',
+                                    newsletterName: "popkid",
                                     serverMessageId: 143
                                 }
                             }
@@ -292,8 +275,8 @@ router.get('/', async (req, res) => {
                                 forwardingScore: 5,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363369453603973@newsletter',
-                                    newsletterName: "Sʜᴀᴅᴏᴡ-Xᴛᴇᴄʜ",
+                                    newsletterJid: '120363419140572186@newsletter',
+                                    newsletterName: "popkid",
                                     serverMessageId: 143
                                 }
                             }
