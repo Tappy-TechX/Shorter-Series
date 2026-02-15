@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SHADOW XTECH | PAIR CODE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --neon1: #7C3AED;
+      --neon2: #00E5FF;
+      --neon3: #FF4DAB;
+      --bg: #08011A;
+      --glass: rgba(255,255,255,0.05);
+      --text: #EAF3FF;
+      --muted: #9aa3b2;
+      --input-bg: rgba(255,255,255,0.05);
+      --shadow: 0 10px 30px rgba(0,0,0,0.6);
+      --transition: all .3s cubic-bezier(.4,0,.2,1);
+    }
+
+    * {margin:0;padding:0;box-sizing:border-box;transition:var(--transition);}
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x:hidden;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(124,58,237,0.12) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(0,229,255,0.12) 0%, transparent 25%);
+      animation: bgShift 20s ease-in-out infinite;
+      padding: 20px;
+    }
+    @keyframes bgShift { 50% { background-position: 20% 60%, 80% 30%; } }
+
+    .particles {
+      position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+    }
+    .particle {
+      position:absolute;border-radius:50%;
+      background:rgba(124,58,237,0.3);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0%{transform:translateY(0) rotate(0deg);}
+      100%{transform:translateY(-100vh) rotate(360deg);}
+    }
+
+    .home-btn {
+      position: fixed;top: 1.5rem;right: 1.5rem;
+      background: linear-gradient(135deg,var(--neon1),var(--neon2));
+      color:#fff;text-decoration:none;font-weight:600;
+      padding:.8rem 1.5rem;border-radius:30px;
+      box-shadow: 0 0 20px rgba(0,229,255,0.25);
+      display:flex;align-items:center;gap:.5rem;z-index:999;
+    }
+    .home-btn:hover { transform:translateY(-2px);box-shadow:0 0 35px rgba(124,58,237,0.4); }
+
+    .container {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border: 1px solid rgba(124,58,237,0.15);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      text-align:center;
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      width: 100px; height: 100px;
+      border-radius:50%;margin:0 auto 1.2rem;
+      border:3px solid var(--neon2);
+      box-shadow: 0 0 25px rgba(0,229,255,0.3);
+      background-image:url('https://files.catbox.moe/og4tsk.jpg');
+      background-size:cover;background-position:center;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {from{box-shadow:0 0 10px rgba(0,229,255,0.3);}to{box-shadow:0 0 30px rgba(255,77,171,0.4);}}
+
+    h1 {
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.8rem;
+      background: linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      margin-bottom: .5rem;
+    }
+    p {color:var(--muted);font-size:1rem;margin-bottom:1rem;}
+
+    label {display:block;text-align:left;margin:.5rem 0 .3rem;font-weight:600;}
+
+    .input-container {position:relative;}
+    .input-container i {
+      position:absolute;left:15px;top:50%;transform:translateY(-50%);
+      color:var(--muted);
+    }
+    input[type=text]{
+      width:100%;padding:15px 15px 15px 45px;
+      border:1px solid rgba(124,58,237,0.3);
+      border-radius:10px;
+      background:var(--input-bg);
+      color:var(--text);
+      font-size:1rem;
+    }
+    input:focus{outline:none;border-color:var(--neon2);box-shadow:0 0 8px rgba(0,229,255,0.2)}
+
+    .btn {
+      background: linear-gradient(90deg,var(--neon1),var(--neon2));
+      color:#07021A;
+      padding:14px;
+      border:none;
+      border-radius:10px;
+      font-weight:700;
+      width:100%;
+      cursor:pointer;
+      margin-top:1rem;
+      font-size:1rem;
+    }
+    .btn:hover{transform:translateY(-3px);box-shadow:0 0 25px rgba(124,58,237,0.3);}
+    .btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+    #result {
+      display:none;
+      margin-top:1.5rem;
+      padding:1rem;
+      border-radius:12px;
+      background:rgba(0,229,255,0.05);
+      border-left:4px solid var(--neon1);
+    }
+    #pair-code {
+      font-family:"Orbitron";
+      font-size:1.6rem;
+      margin:0.5rem 0;
+      color:var(--neon2);
+      letter-spacing:2px;
+      text-shadow:0 0 10px rgba(0,229,255,0.4);
+    }
+
+    .action-buttons{display:flex;gap:1rem;margin-top:1.2rem;}
+    .action-btn {
+      flex:1;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;
+    }
+    .copy-btn{background:var(--neon1);color:#fff;border:none;}
+    .copy-btn:hover{background:var(--neon2);color:#000;}
+    .back-btn{background:transparent;border:2px solid var(--neon2);color:var(--neon2);}
+    .back-btn:hover{background:rgba(0,229,255,0.08);}
+
+    .error-message {color:#ff4d4d;display:none;font-size:.9rem;margin-top:.5rem;}
+    .success-message {color:var(--neon2);display:none;margin-top:.5rem;}
+    .spinner {
+      width:45px;height:45px;
+      border:3px solid rgba(124,58,237,0.25);
+      border-top:3px solid var(--neon2);
+      border-radius:50%;
+      margin:1rem auto;display:none;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media(max-width:480px){
+      .container{padding:1.5rem;}
+      h1{font-size:1.5rem;}
+      .action-buttons{flex-direction:column;}
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <a href="./" class="home-btn"><i class="fas fa-home"></i> Home</a>
+
+  <div class="container">
+    <div class="logo"></div>
+    <h1>SHADOW XTECH PAIR CODE</h1>
+    <p>Enter your WhatsApp number (without + sign)</p>
+
+    <label for="phone-number">Phone Number</label>
+    <div class="input-container">
+      <i class="fas fa-phone"></i>
+      <input type="text" id="phone-number" placeholder="e.g., 2547xxxxxxxx" inputmode="numeric" pattern="[0-9]*" />
+    </div>
+    <div id="error-message" class="error-message">Please enter a valid phone number (10–15 digits)</div>
+
+    <button id="submit" class="btn">
+      <span id="btn-text">GET CODE</span>
+      <span id="btn-spinner" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
+    </button>
+
+    <div id="loading-spinner" class="spinner"></div>
+
+    <div id="result">
+      <p>Your pairing code is:</p>
+      <div id="pair-code"></div>
+      <p>Enter this code in your WhatsApp linked devices.</p>
+
+      <div class="action-buttons">
+        <button id="copy-btn" class="action-btn copy-btn"><i class="fas fa-copy"></i> COPY CODE</button>
+        <a href="./" class="action-btn back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
+      </div>
+
+      <div id="success-message" class="success-message">
+        <i class="fas fa-check-circle"></i> Code copied to clipboard!
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    // Particle background
+    (function createParticles(){
+      const particles = document.getElementById('particles');
+      const count = window.innerWidth < 768 ? 15 : 30;
+      for(let i=0;i<count;i++){
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const size = Math.random()*10+6;
+        p.style.width = p.style.height = size+'px';
+        p.style.left = Math.random()*100+'%';
+        p.style.top = Math.random()*100+'%';
+        p.style.animationDuration = (Math.random()*15+10)+'s';
+        p.style.animationDelay = (Math.random()*5)+'s';
+        particles.appendChild(p);
+      }
+    })();
+
+    const phoneNumberInput=document.getElementById("phone-number");
+    const submitBtn=document.getElementById("submit");
+    const resultDiv=document.getElementById("result");
+    const pairCodeDiv=document.getElementById("pair-code");
+    const copyBtn=document.getElementById("copy-btn");
+    const errorMsg=document.getElementById("error-message");
+    const successMsg=document.getElementById("success-message");
+    const btnText=document.getElementById("btn-text");
+    const btnSpin=document.getElementById("btn-spinner");
+    const loading=document.getElementById("loading-spinner");
+
+    function validNum(num){const clean=num.replace(/\D/g,'');return clean.length>=10&&clean.length<=15;}
+
+    submitBtn.addEventListener("click", async (e)=>{
+      e.preventDefault();
+      const num=phoneNumberInput.value.trim();
+      if(!validNum(num)){
+        errorMsg.style.display="block";
+        return;
+      }
+      errorMsg.style.display="none";
+      btnText.style.display="none";btnSpin.style.display="inline-block";submitBtn.disabled=true;
+      try{
+        const {data}=await axios.get(`/code?number=${num}`);
+        const code=data.code||"ERROR";
+        pairCodeDiv.textContent=code;
+        resultDiv.style.display="block";
+        resultDiv.scrollIntoView({behavior:"smooth"});
+      }catch(err){
+        pairCodeDiv.textContent="SERVICE ERROR";
+        resultDiv.style.display="block";
+      }finally{
+        btnText.style.display="inline-block";btnSpin.style.display="none";submitBtn.disabled=false;
+      }
+    });
+
+    copyBtn.addEventListener("click",()=>{
+      const code=pairCodeDiv.textContent;
+      navigator.clipboard.writeText(code).then(()=>{
+        successMsg.style.display="block";
+        setTimeout(()=>successMsg.style.display="none",2000);
+      });
+    });
+
+    phoneNumberInput.addEventListener("input",(e)=>{
+      e.target.value=e.target.value.replace(/\D/g,'');
+      if(errorMsg.style.display==="block"){errorMsg.style.display="none";}
+    });
+  </script>
+</body>
+</html>
