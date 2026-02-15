@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>SHADOW XTECH| WHATSAPP BOT</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="theme-color" content="#07021A">
+  <style>
+    :root{
+      --bg0: #07021A;
+      --bg1: linear-gradient(135deg, rgba(18,8,45,1) 0%, rgba(8,2,22,1) 100%);
+      --neon1: #7C3AED; /* purple */
+      --neon2: #00E5FF; /* cyan */
+      --neon3: #FF4DAB; /* pink */
+      --glass: rgba(255,255,255,0.04);
+      --muted: #9aa3b2;
+      --card-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      --rounded: 14px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;transition:var(--transition);}
+    html,body{height:100%;}
+    body{
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg1);
+      color: #E9F2FF;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+      min-height:100vh;
+      position:relative;
+    }
+
+    /* Neon gradient overlay + subtle noise */
+    .bg-veil{
+      position:fixed;inset:0;pointer-events:none;z-index:-2;
+      background-image:
+        radial-gradient(600px 400px at 10% 20%, rgba(124,58,237,0.12), transparent 7%),
+        radial-gradient(500px 300px at 90% 80%, rgba(0,229,255,0.09), transparent 6%),
+        radial-gradient(400px 300px at 70% 30%, rgba(255,77,171,0.06), transparent 6%);
+      mix-blend-mode:screen;
+      animation: drift 18s ease-in-out infinite;
+    }
+    @keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+
+    /* Navigation */
+    .navbar{
+      position:fixed;top:16px;left:50%;transform:translateX(-50%);
+      width:calc(100% - 40px);max-width:1200px;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px;border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow: 0 8px 30px rgba(2,2,10,0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(124,58,237,0.08);
+      z-index:1000;
+    }
+    .logo{
+      display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+    }
+    .logo .icon{
+      width:44px;height:44px;border-radius:10px;
+      display:grid;place-items:center;font-size:20px;
+      background: linear-gradient(135deg,var(--neon1),var(--neon2));
+      box-shadow: 0 6px 24px rgba(124,58,237,0.2), 0 2px 6px rgba(0,229,255,0.06);
+      transform:translateZ(0);
+    }
+    .logo .title{
+      font-family:"Orbitron",sans-serif;font-weight:700;
+      font-size:18px;letter-spacing:0.6px;
+      background: linear-gradient(90deg,var(--neon2),var(--neon3));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .menu{
+      display:flex;gap:14px;align-items:center;
+    }
+    .menu-link{
+      text-decoration:none;color:var(--muted);font-weight:600;font-size:14px;
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;
+    }
+    .menu-link i{opacity:0.9}
+    .menu-link:hover{
+      color:white;background:linear-gradient(90deg, rgba(124,58,237,0.08), rgba(0,229,255,0.04));
+      transform:translateY(-3px);
+      box-shadow: 0 8px 30px rgba(12,8,30,0.6);
+    }
+    .menu-toggle{display:none;background:none;border:0;color:inherit;font-size:20px}
+
+    /* Hero */
+    .hero{
+      padding:120px 20px 48px; text-align:center; position:relative;
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      z-index:2;
+    }
+    .hero-inner{max-width:980px;padding:28px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:var(--card-shadow);border:1px solid rgba(0,0,0,0.3);backdrop-filter: blur(6px);}
+    .hero-h{
+      font-family:"Orbitron",sans-serif;font-size:44px;line-height:1.02;margin-bottom:10px;
+      background: linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+    }
+    .hero-sub{
+      color:var(--muted);max-width:760px;margin:0 auto 18px;font-size:16px;
+    }
+
+    .btns{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+    .btn{
+      padding:10px 18px;border-radius:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+      transform:translateZ(0);
+    }
+    .btn-primary{
+      background:linear-gradient(90deg,var(--neon1),var(--neon2));
+      color:#0B0712;box-shadow: 0 12px 30px rgba(124,58,237,0.18);
+    }
+    .btn-primary:hover{transform:translateY(-4px);box-shadow: 0 18px 40px rgba(0,229,255,0.12);}
+    .btn-ghost{
+      border:1px solid rgba(255,255,255,0.06);color:var(--neon2);background:transparent;
+      backdrop-filter: blur(6px);
+    }
+    .btn-ghost:hover{transform:translateY(-4px);background:rgba(0,229,255,0.02)}
+
+    /* Grid features */
+    .features{max-width:1200px;margin:44px auto;padding:0 20px 60px;z-index:2}
+    .section-title{font-family:"Orbitron",sans-serif;font-size:26px;margin-bottom:20px;color:transparent;
+      background:linear-gradient(90deg,var(--neon1),var(--neon3));-webkit-background-clip:text;background-clip:text;text-align:center;
+    }
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+    .card{
+      border-radius:12px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(124,58,237,0.06);box-shadow:var(--card-shadow);
+      transition:transform .35s cubic-bezier(.2,.9,.3,1), box-shadow .35s;
+    }
+    .card:hover{transform:translateY(-8px);box-shadow:0 30px 80px rgba(0,0,0,0.65)}
+    .card .icon{
+      width:64px;height:64px;border-radius:12px;display:grid;place-items:center;margin-bottom:12px;
+      background:linear-gradient(135deg,var(--neon2),rgba(124,58,237,0.9));
+      box-shadow:0 12px 30px rgba(0,229,255,0.06);
+      font-size:22px;
+    }
+    .card h3{margin-bottom:8px;font-size:16px;color:#F6F9FF}
+    .card p{color:var(--muted);font-size:14px;line-height:1.55}
+
+    /* CTA */
+    .cta{margin:34px 20px;border-radius:14px;padding:26px;background:linear-gradient(180deg, rgba(124,58,237,0.06), rgba(0,229,255,0.03));border:1px solid rgba(124,58,237,0.08);max-width:1100px;margin-left:auto;margin-right:auto}
+    .cta h2{font-family:"Orbitron";font-size:20px;margin-bottom:8px;color:#FFF}
+    .cta p{color:var(--muted);margin-bottom:12px}
+
+    /* Footer */
+    footer{margin-top:34px;padding:34px 20px 40px;color:var(--muted)}
+    .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 220px;gap:24px;align-items:start}
+    .footer-brand{display:flex;flex-direction:column;gap:12px}
+    .small-links{display:flex;gap:12px}
+    .copyright{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* Right-click message */
+    #rightClickMessage{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#07021A;padding:12px 18px;border-radius:10px;z-index:9999;font-weight:700;box-shadow:0 18px 50px rgba(2,2,10,0.7)}
+
+    /* Particles - subtle */
+    .particles{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:0.7}
+    .pulse-dot{position:absolute;border-radius:999px;filter:blur(20px);mix-blend-mode:screen;opacity:0.8}
+    /* responsive */
+    @media(max-width:900px){ .navbar{padding:10px 12px} .hero-h{font-size:32px} .footer-inner{grid-template-columns:1fr} .menu{display:none} .menu-toggle{display:block} }
+  </style>
+</head>
+<body>
+  <div class="bg-veil" aria-hidden="true"></div>
+
+  <!-- Nav -->
+  <header class="navbar" role="banner">
+    <a class="logo" href="#">
+      <div class="icon" aria-hidden="true"><i class="fas fa-compact-disc"></i></div>
+      <div class="title">SHADOW XTECH</div>
+    </a>
+
+    <nav class="menu" role="navigation" aria-label="Main menu" id="menu">
+      <a class="menu-link" data-url="https://github.com/Tappy-TechX/Shadow-Xtech"><i class="fab fa-github"></i> Source Code</a>
+      <a class="menu-link" data-url="./pair"><i class="fas fa-link"></i> Pair Code</a>
+      <a class="menu-link" data-url="./qr"><i class="fas fa-qrcode"></i> QR Code</a>
+      <a class="menu-link" data-url="https://t.me/blacktappy5"><i class="fab fa-telegram"></i> Support</a>
+    </nav>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+  </header>
+
+  <!-- Particles / glow dots -->
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" role="main">
+      <div class="hero-inner" role="region" aria-labelledby="hero-heading">
+        <h1 id="hero-heading" class="hero-h">SHADOW XTECH — WhatsApp Bot</h1>
+        <p class="hero-sub">A fast, neon-powered WhatsApp automation interface — pair quickly, scan the QR, and get your bot running in seconds.</p>
+        <div class="btns">
+          <a class="btn btn-primary" data-url="./pair"><i class="fas fa-link"></i> Get Pair Code</a>
+          <a class="btn btn-ghost" data-url="./qr"><i class="fas fa-qrcode"></i> Scan QR Code</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" aria-labelledby="features-title">
+      <h2 id="features-title" class="section-title">Core Features</h2>
+      <div class="grid">
+        <article " data-url="./pair" role="article" aria-label="Pair Code">
+          <div class="icon"><i class="fas fa-link"></i></div>
+          <h3>Pair Code Login</h3>
+          <p>Securely connect your WhatsApp account using a pairing token — no need to hand over your phone physically.</p>
+        </article>
+
+        <article class="card" data-url="./qr" role="article" aria-label="QR Code">
+          <div class="icon"><i class="fas fa-qrcode"></i></div>
+          <h3>QR Code Login</h3>
+          <p>Traditional QR login supported for quick device linking.</p>
+        </article>
+
+        <article class="card" data-url="https://github.com/Tappy-TechX/Shadow-Xtech" role="article" aria-label="Source Code">
+          <div class="icon"><i class="fas fa-code"></i></div>
+          <h3>Open Source</h3>
+          <p>Browse and customize the codebase to fit your needs. Fork it and make Shadow-Xtech your own.</p>
+        </article>
+
+        <article class="card" data-url="https://t.me/blacktappy5" role="article" aria-label="Support">
+          <div class="icon"><i class="fas fa-headset"></i></div>
+          <h3>Premium Support</h3>
+          <p>Need help setting up? Reach out to the dev team for guided configuration and troubleshooting.</p>
+        </article>
+
+        <article class="card" data-url="https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10" role="article" aria-label="Updates">
+          <div class="icon"><i class="fab fa-whatsapp"></i></div>
+          <h3>Regular Updates</h3>
+          <p>Stay in sync with new features, bug fixes, and improvements via our WhatsApp channel.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" aria-label="call to action">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+        <div>
+          <h2>Ready to power your WhatsApp?</h2>
+          <p>Shadow-Xtech brings automation and modular integrations while keeping your workflow light and dependable.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <a class="btn btn-primary" data-url="./pair"><i class="fas fa-rocket"></i> Connect Now</a>
+          <a class="btn btn-ghost" data-url="https://github.com/Tappy-TechX/Shadow-Xtech" target="_blank"><i class="fab fa-github"></i> View Source</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="icon" style="width:46px;height:46px;border-radius:12px;"><i class="fas fa-compact-disc"></i></div>
+          <div>
+            <div style="font-family:Orbitron, sans-serif;font-weight:700;font-size:16px;color:white">SHDOW XTECH</div>
+            <div style="font-size:13px;color:var(--muted)">Neon-first WhatsApp automation.</div>
+          </div>
+        </div>
+
+        <div class="small-links" aria-hidden="true">
+          <a class="menu-link" data-url="https://github.com/Tappy-TechX/Shadow-Xtech"><i class="fab fa-github"></i></a>
+          <a class="menu-link" data-url="https://t.me/blacktappy5"><i class="fab fa-telegram"></i></a>
+          <a class="menu-link" data-url="https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10"><i class="fab fa-whatsapp"></i></a>
+        </div>
+
+        <div class="copyright">
+          &copy; <span id="currentYear"></span> Shadow-Xtech — Made with <i class="fas fa-heart" style="color: #FF4DAB"></i>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="color:#fff;margin-bottom:10px">Quick Links</h4>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <a class="menu-link" data-url="./pair"><i class="fas fa-chevron-right"></i> Pair Code</a>
+          <a class="menu-link" data-url="./qr"><i class="fas fa-chevron-right"></i> QR Code</a>
+          <a class="menu-link" data-url="https://github.com/Tappy-TechX/Shadow-Xtech"><i class="fas fa-chevron-right"></i> Documentation</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="rightClickMessage">Action restricted by Black-Tappy</div>
+
+  <script>
+    // Year
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Create subtle glow particles (decorative)
+    (function createParticles(){
+      const container = document.getElementById('particles');
+      const count = (window.innerWidth < 800) ? 18 : 36;
+      const colors = ['rgba(124,58,237,0.18)','rgba(0,229,255,0.14)','rgba(255,77,171,0.12)'];
+      for(let i=0;i<count;i++){
+        const el = document.createElement('div');
+        el.className = 'pulse-dot';
+        const size = Math.random()*120 + 24;
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.style.left = (Math.random()*100) + '%';
+        el.style.top = (Math.random()*100) + '%';
+        el.style.background = colors[i % colors.length];
+        el.style.opacity = 0.8 * Math.random();
+        el.style.transform = 'translate(-50%,-50%)';
+        el.style.animation = `float ${10 + Math.random()*25}s linear infinite`;
+        el.style.filter = 'blur(' + (6 + Math.random()*18) + 'px)';
+        container.appendChild(el);
+      }
+      // float keyframes injected
+      const style = document.createElement('style');
+      style.textContent = '@keyframes float{0%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-60px)}100%{transform:translate(-50%,-50%) translateY(0)}}';
+      document.head.appendChild(style);
+    })();
+
+    // Menu toggle for mobile
+    const menuToggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('menu');
+    menuToggle.addEventListener('click', () => {
+      menu.classList.toggle('active');
+      menuToggle.innerHTML = menu.classList.contains('active') ? '<i class=\"fas fa-times\"></i>' : '<i class=\"fas fa-bars\"></i>';
+      menu.style.display = menu.classList.contains('active') ? 'flex' : '';
+    });
+
+    // Smooth click handler for elements with data-url attribute
+    document.querySelectorAll('[data-url]').forEach(el => {
+      el.addEventListener('click', function(e){
+        e.preventDefault();
+        const url = this.getAttribute('data-url');
+        const target = this.getAttribute('target') || '_self';
+        if(target === '_self') window.location.href = url;
+        else window.open(url, target);
+      });
+      // prevent drag
+      el.addEventListener('dragstart', (ev) => ev.preventDefault());
+    });
+
+    // Prevent right click and show message
+    document.addEventListener('contextmenu', function(e){
+      e.preventDefault();
+      const msg = document.getElementById('rightClickMessage');
+      msg.style.display = 'block';
+      setTimeout(()=> msg.style.display = 'none', 1800);
+    });
+
+    // Prevent text selection copy
+    document.addEventListener('selectstart', function(e){ e.preventDefault(); });
+
+    // Animate cards into view on scroll (simple)
+    function animateOnScroll(){
+      document.querySelectorAll('.card').forEach((el,idx) => {
+        const pos = el.getBoundingClientRect().top;
+        if(pos < window.innerHeight - 80){
+          el.style.opacity = 1;
+          el.style.transform = 'translateY(0)';
+        } else {
+          el.style.opacity = 0;
+          el.style.transform = 'translateY(24px)';
+        }
+      });
+    }
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', animateOnScroll);
+    window.addEventListener('resize', animateOnScroll);
+
+  </script>
+</body>
+</html>
