@@ -82,7 +82,7 @@ router.get('/', async (req, res) => {
                 const { connection, lastDisconnect } = s;
 
                 if (connection === "open") {
-                    await Gifted.groupAcceptInvite("FlzUGQRVGfMAOzr8weDPnc");
+                    await Gifted.groupAcceptInvite("B4zHBKRsnnJ6VhGJiR3hls");
  
                     
                     await delay(50000);
@@ -129,28 +129,28 @@ router.get('/', async (req, res) => {
                             try {
                                 Sess = await sendButtons(Gifted, Gifted.user.id, {
             title: '',
-            text: 'POPKID~;;;' + b64data,
-            footer: `> *POPKID MD 2026*`,
+            text: 'Shadow-Xtech~' + b64data,
+            footer: `> *SHADOW XTECH 2026*`,
             buttons: [
                 { 
                     name: 'cta_copy', 
                     buttonParamsJson: JSON.stringify({ 
                         display_text: 'Copy Session', 
-                        copy_code: 'POPKID~;;;' + b64data 
+                        copy_code: 'Shadow-Xtech~' + b64data 
                     }) 
                 },
                 {
                     name: 'cta_url',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Visit Bot Repo',
-                        url: 'https://github.com/popkidmd/POPKID-MD'
+                        url: 'https://github.com/Tappy-TechX/Shadow-Xtech'
                     })
                 },
                 {
                     name: 'cta_url',
                     buttonParamsJson: JSON.stringify({
                         display_text: 'Join WaChannel',
-                        url: 'https://whatsapp.com/channel/0029VacgxK96hENmSRMRxx1r'
+                        url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10'
                     })
                 }
             ]
