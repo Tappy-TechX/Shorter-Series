@@ -1,14 +1,13 @@
-const { 
-    giftedId,
-    removeFile
-} = require('../gift');
+const { giftedId, removeFile, safeGroupAcceptInvite } = require('../gift');
+const { SESSION_PREFIX, GC_JID } = require('../config');
 const QRCode = require('qrcode');
 const express = require('express');
 const zlib = require('zlib');
 const path = require('path');
 const fs = require('fs');
-let router = express.Router();
+const router = express.Router();
 const pino = require("pino");
+const { sendButtons } = require('gifted-btns');
 const {
     default: giftedConnect,
     useMultiFileAuthState,
@@ -17,48 +16,12 @@ const {
     fetchLatestBaileysVersion
 } = require("@whiskeysockets/baileys");
 
-const sessionDir = path.join(__dirname, "session");
+const sessionDir = path.join(__dirname, "sessions");
 
-
-router.get('/', async (req, res) => {
-    const id = giftedId();
-    let responseSent = false;
-    let sessionCleanedUp = false;
-
-    async function cleanUpSession() {
-        if (!sessionCleanedUp) {
-            await removeFile(path.join(sessionDir, id));
-            sessionCleanedUp = true;
-        }
-    }
-
-    async function GIFTED_QR_CODE() {
-        const { version } = await fetchLatestBaileysVersion();
-        console.log(version);
-        const { state, saveCreds } = await useMultiFileAuthState(path.join(sessionDir, id));
-        try {
-            let Gifted = giftedConnect({
-                version,
-                auth: state,
-                printQRInTerminal: false,
-                logger: pino({ level: "silent" }),
-                browser: Browsers.macOS("Desktop"),
-                connectTimeoutMs: 60000,
-                keepAliveIntervalMs: 30000
-            });
-
-            Gifted.ev.on('creds.update', saveCreds);
-            Gifted.ev.on("connection.update", async (s) => {
-                const { connection, lastDisconnect, qr } = s;
-                
-                if (qr && !responseSent) {
-                    const qrImage = await QRCode.toDataURL(qr);
-                    if (!res.headersSent) {
-                        res.send(`
-                            <!DOCTYPE html>
+const buildQRPage = (qrImage) => `<!DOCTYPE html>
                             <html>
                             <head>
-                                <title>SHADOW-XTECH | QR CODE</title>
+                                <title>Shadow-Xtech | QR Scanner</title>
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                                 <style>
                                     body {
@@ -182,27 +145,55 @@ router.get('/', async (req, res) => {
                                     });
                                 </script>
                             </body>
-                            </html>
-                        `);
+                            </html>`;
+
+router.get('/', async (req, res) => {
+    const id = giftedId();
+    let responseSent = false;
+    let sessionCleanedUp = false;
+
+    async function cleanUpSession() {
+        if (!sessionCleanedUp) {
+            await removeFile(path.join(sessionDir, id));
+            sessionCleanedUp = true;
+        }
+    }
+
+    async function GIFTED_QR_CODE() {
+        const { version } = await fetchLatestBaileysVersion();
+        console.log(version);
+        const { state, saveCreds } = await useMultiFileAuthState(path.join(sessionDir, id));
+        try {
+            let Gifted = giftedConnect({
+                version,
+                auth: state,
+                printQRInTerminal: false,
+                logger: pino({ level: "silent" }),
+                browser: Browsers.macOS("Desktop"),
+                connectTimeoutMs: 60000,
+                keepAliveIntervalMs: 30000
+            });
+
+            Gifted.ev.on('creds.update', saveCreds);
+            Gifted.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect, qr } = s;
+
+                if (qr && !responseSent) {
+                    const qrImage = await QRCode.toDataURL(qr);
+                    if (!res.headersSent) {
+                        res.send(buildQRPage(qrImage));
                         responseSent = true;
                     }
                 }
 
                 if (connection === "open") {
-                    /*try {
-                        // Follow newsletter and join group
-                        await Gifted.newsletterFollow("120363369453603973@newsletter");
-                        await Gifted.groupAcceptInvite("B4zHBKRsnnJ6VhGJiR3hls");
-                    } catch (error) {
-                        console.error("Newsletter/group error:", error);
-                    }*/
-
+                    await safeGroupAcceptInvite(Gifted, GC_JID);
                     await delay(10000);
 
                     let sessionData = null;
                     let attempts = 0;
                     const maxAttempts = 10;
-                    
+
                     while (attempts < maxAttempts && !sessionData) {
                         try {
                             const credsPath = path.join(sessionDir, id, "creds.json");
@@ -230,88 +221,52 @@ router.get('/', async (req, res) => {
                     try {
                         let compressedData = zlib.gzipSync(sessionData);
                         let b64data = compressedData.toString('base64');
-
-                            const Sess = await Gifted.sendMessage(Gifted.user.id, { 
-                            text: 'Shadow-Xtech~' + b64data
+                        await sendButtons(Gifted, Gifted.user.id, {
+                            title: '',
+                            text: SESSION_PREFIX + b64data,
+                            footer: `> *Powered By Tappy-TechX*`,
+                            buttons: [
+                                {
+                                    name: 'cta_copy',
+                                    buttonParamsJson: JSON.stringify({
+                                        display_text: '🔗 Copy Session',
+                                        copy_code: SESSION_PREFIX + b64data
+                                    })
+                                },
+                                {
+                                    name: 'cta_url',
+                                    buttonParamsJson: JSON.stringify({
+                                        display_text: '📂 Visit Bot Repo',
+                                        url: 'https://github.com/mauricegift/atassa'
+                                    })
+                                },
+                                {
+                                    name: 'cta_url',
+                                    buttonParamsJson: JSON.stringify({
+                                        display_text: '🌐 Join WaChannel',
+                                        url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10'
+                                    })
+                                }
+                            ]
                         });
-
-                        let GIFTED_TEXT = `
-🔍 SYSTEM ID : » #𝙓-𝙏𝙀𝘾𝙃-𝙎𝙀𝙎𝙎𝙄𝙊𝙉
-🧠 CORE ENGINE : » Shadow-Node™ vX.1 ⚙️
-🛡️ STATUS : » [ ✅ LINKED | 🔐 ENCRYPTED ]
-⏱️ UPTIME : » 💯 Synchronized · Stable · Online
-⎾====================================⏌
-📡 SYSTEM MODULES — STATUS
-─────────────────────────
-◉ Boot Protocol   » 🔒 LOCKED
-◉ SecureNode™     » 🟢 ONLINE
-◉ GhostLink AI    » ⚡ ACTIVE
-◉ Neural Sync     » 🧬 ENABLED
-⎿====================================⏋
-🧭 ACCESS PORTAL LINKS
-📢 Channel Uplink :
-╰ ⌲ 🔗 https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10�
-👨‍💻 Developer Console (Tappy) :
-╰ ⌲ 💬 https://wa.me/254756360306�
-🌟 Git Integration :
-╰ ⌲ 🛰️ https://github.com/Tappy-Black/Shadow-Xtech-V1�
-📄 NOTICE:
-⚠️ This session is uniquely encrypted.
-❌ Do NOT share this ID or session file.
-✅ Securely synchronized with MEGA cloud vault.
-⎾🧬 POWERED BY BLACK-TAPPY™⏌
-                        `;
-
-                        const giftedMess = {
-                            image: { url: 'https://i.ibb.co/fTCrW08/373b5c2300fc0f90e39b3797f2db358b.jpg' },
-                            caption: GIFTED_TEXT,
-                            contextInfo: {
-                                mentionedJid: [Gifted.user.id],
-                                forwardingScore: 5,
-                                isForwarded: true,
-                                forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363369453603973@newsletter',
-                                    newsletterName: "Sʜᴀᴅᴏᴡ-Xᴛᴇᴄʜ",
-                                    serverMessageId: 143
-                                }
-                            }
-                        };
-                        await Gifted.sendMessage(Gifted.user.id, giftedMess, { quoted: Sess });
-
-                        const giftedAud = {
-                            audio: { url: 'https://files.giftedtech.web.id/audio/Tm7502728882089773829.mp3' },
-                            mimetype: 'audio/mpeg',
-                            ptt: true,
-                            contextInfo: {
-                                mentionedJid: [Gifted.user.id],
-                                forwardingScore: 5,
-                                isForwarded: true,
-                                forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363369453603973@newsletter',
-                                    newsletterName: "Sʜᴀᴅᴏᴡ-Xᴛᴇᴄʜ",
-                                    serverMessageId: 143
-                                }
-                            }
-                        };
-                        await Gifted.sendMessage(Gifted.user.id, giftedAud, { quoted: Sess });
 
                         await delay(2000);
                         await Gifted.ws.close();
                     } catch (sendError) {
-                        console.error("Error sending session:", sendError);
+                        console.error("🔴 Error sending session:", sendError);
                     } finally {
                         await cleanUpSession();
                     }
-                    
-                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
+
+                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output?.statusCode != 401) {
                     await delay(10000);
                     GIFTED_QR_CODE();
                 }
             });
         } catch (err) {
-            console.error("Main error:", err);
+            console.error("🔴 Main error:", err);
             if (!responseSent) {
-                res.status(500).json({ code: "QR Service is Currently Unavailable" });
+                res.status(500).json({ code: "🌐 QR Service is Currently Unavailable" });
                 responseSent = true;
             }
             await cleanUpSession();
@@ -321,10 +276,10 @@ router.get('/', async (req, res) => {
     try {
         await GIFTED_QR_CODE();
     } catch (finalError) {
-        console.error("Final error:", finalError);
+        console.error("🔴 Final error:", finalError);
         await cleanUpSession();
         if (!responseSent) {
-            res.status(500).json({ code: "Service Error" });
+            res.status(500).json({ code: "🔴 Service Error" });
         }
     }
 });
