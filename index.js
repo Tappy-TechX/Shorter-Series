@@ -16,19 +16,19 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/pair", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "pair.html"), { dotfiles: "allow" }, (err) => {
-        if (err) res.status(500).send("🔴 Error serving page: " + err.message);
+        if (err) res.status(500).send("Error serving page: " + err.message);
     });
 });
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"), { dotfiles: "allow" }, (err) => {
-        if (err) res.status(500).send("🔴 Error serving page: " + err.message);
+        if (err) res.status(500).send("Error serving page: " + err.message);
     });
 });
 
 app.get("/qr", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "qr.html"), { dotfiles: "allow" }, (err) => {
-        if (err) res.status(500).send("🔴 Error serving page: " + err.message);
+        if (err) res.status(500).send("Error serving page: " + err.message);
     });
 });
 app.use("/qr", qrRoute);
@@ -36,17 +36,17 @@ app.use("/code", pairRoute);
 
 app.get("/session/:id", async (req, res) => {
     if (!isConfigured()) {
-        return res.status(503).send("📂 No database configured on this server.");
+        return res.status(503).send("No database configured on this server.");
     }
     try {
         const session = await getSession(req.params.id);
         if (!session) {
-            return res.status(404).send("🌐 Session not found.");
+            return res.status(404).send("Session not found.");
         }
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.send(session);
     } catch (e) {
-        res.status(500).send("🔴 Error retrieving session.");
+        res.status(500).send("Error retrieving session.");
     }
 });
 
@@ -62,7 +62,7 @@ app.get("/health", (req, res) => {
 
 app.listen(PORT, () => {
     console.log(
-        `\n🟢 Deployment Successful! 🚀\n\n🌐 Session-Server Running on http://localhost:${PORT}`,
+        `\n🚀 Deployment Successful!\n\n🌐 Session-Server Running on http://localhost:${PORT}`,
     );
     init(config);
 });
