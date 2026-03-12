@@ -411,10 +411,7 @@
   </main>
 
   <script>
-    // Note: The original HTML included a reference to an element with id='yr' in the footer, 
-    // which is now removed. I will comment out the line that sets its content for completeness, 
-    // though it won't cause an error since the element itself is gone.
-    // document.getElementById('yr').textContent = new Date().getFullYear();
+    document.getElementById('yr').textContent = new Date().getFullYear();
 
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -445,7 +442,6 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('[data-anim]').forEach(el => observer.observe(el));
 
-    // Function to set a circular favicon programmatically
     (function setCircularFavicon(src) {
       const canvas = document.createElement('canvas');
       canvas.width = 64; canvas.height = 64;
@@ -494,11 +490,7 @@
     const copyText     = document.getElementById('copyText');
     const newCodeBtn   = document.getElementById('newCodeBtn');
 
-    // Initialize button state
-    submitBtn.disabled = false;
-
     phoneInput.addEventListener('input', () => {
-      // Strip non-digits
       phoneInput.value = phoneInput.value.replace(/\D/g, '');
       phoneError.classList.add('hidden');
       generalError.classList.add('hidden');
@@ -508,7 +500,6 @@
     function showPhoneError(msg) {
       phoneErrTxt.textContent = msg;
       phoneError.classList.remove('hidden');
-      // Apply shake animation to input and error message container
       phoneInput.classList.add('shake');
       phoneError.classList.add('shake');
       setTimeout(() => { phoneInput.classList.remove('shake'); phoneError.classList.remove('shake'); }, 450);
@@ -522,47 +513,29 @@
       }
       phoneError.classList.add('hidden');
       generalError.classList.add('hidden');
-      
-      // Update button state to loading
       btnContent.classList.add('hidden');
       btnLoading.classList.remove('hidden');
       submitBtn.disabled = true;
 
-      // --- Simulate API Call ---
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network latency
-
-      let code = '';
-      let fallback = false;
-      
-      // Simple simulation logic: If short session is requested, simulate a fallback to long session 50% of the time
-      if (selectedType === 'short' && Math.random() < 0.5) {
-          code = '987654'; // Example Long Code (which is 6 digits, usually used for short)
-          fallback = true;
-      } else if (num.endsWith('999')) {
-          // Simulate an error for a specific input
-          code = 'Error: Invalid number format on server.';
-      } else {
-          code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
-      }
-      // -------------------------
-
-
-      if (!code || code.toLowerCase().includes('error') || code.toLowerCase().includes('unavailable')) {
-        generalError.textContent = code || 'Failed to get code. Please check the number and try again.';
-        generalError.classList.remove('hidden');
-      } else {
+      try {
+        const res  = await fetch(`/code?number=${encodeURIComponent(num)}&type=${selectedType}`);
+        const data = await res.json();
+        const code = data.code || '';
+        if (!res.ok || !code || code.toLowerCase().includes('error') || code.toLowerCase().includes('unavailable')) {
+          throw new Error(code || 'Service unavailable. Please try again.');
+        }
         pairCode.textContent = code;
-        if (fallback) document.getElementById('fallbackBanner').classList.remove('hidden');
-        
-        // Transition to result screen
+        if (data.fallback) document.getElementById('fallbackBanner').classList.remove('hidden');
         formSection.classList.add('hidden');
         resultSection.classList.remove('hidden');
+      } catch (err) {
+        generalError.textContent = err.message || 'Failed to get code. Please try again.';
+        generalError.classList.remove('hidden');
+      } finally {
+        btnContent.classList.remove('hidden');
+        btnLoading.classList.add('hidden');
+        submitBtn.disabled = false;
       }
-      
-      // Reset button state
-      btnContent.classList.remove('hidden');
-      btnLoading.classList.add('hidden');
-      submitBtn.disabled = false;
     });
 
     copyBtn.addEventListener('click', () => {
@@ -571,31 +544,15 @@
         copyText.textContent = 'Copied!';
         copyBtn.classList.add('copied');
         setTimeout(() => { copyText.textContent = 'Copy Code'; copyBtn.classList.remove('copied'); }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        copyText.textContent = 'Error!';
       });
     });
 
     newCodeBtn.addEventListener('click', () => {
-      // Reset UI to form state
-      document.getElementById('fallbackBanner').classList.add('hidden');
       resultSection.classList.add('hidden');
       formSection.classList.remove('hidden');
-      
-      // Reset input fields
       phoneInput.value = '';
-      generalError.classList.add('hidden');
-      phoneError.classList.add('hidden');
-      
-      // Ensure short type is selected by default on reset
-      selectType('short'); 
-      
       phoneInput.focus();
     });
-    
-    // Initial setup call to ensure correct button styling
-    selectType('short');
   </script>
 </body>
 </html>
