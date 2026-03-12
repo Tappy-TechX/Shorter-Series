@@ -127,16 +127,16 @@ router.get('/', async (req, res) => {
                             const shortSession = `${SESSION_PREFIX}${shortId}`;
                             msgText = `*Quantum Session Initialized 📡*\n\n${shortSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: shortSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session', copy_code: shortSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel', url: WA_CHANNEL }) }
                             ];
                         } else {
                             msgText = `*Quantum Session Initialized 📡*\n\n${fullSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: fullSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session', copy_code: fullSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel', url: WA_CHANNEL }) }
                             ];
                         }
 
@@ -167,22 +167,22 @@ router.get('/', async (req, res) => {
                         await delay(3000);
                         await Gifted.ws.close();
                     } catch (sessionError) {
-                        console.error("🔴 Session processing error:", sessionError);
+                        console.error("Session processing error:", sessionError);
                     } finally {
                         await cleanUpSession();
                     }
 
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output?.statusCode != 401) {
-                    console.log("♻️ Reconnecting...");
+                    console.log("Reconnecting...");
                     await delay(5000);
                     GIFTED_PAIR_CODE();
                 }
             });
 
         } catch (err) {
-            console.error("🔴 Main error:", err);
+            console.error("Main error:", err);
             if (!responseSent && !res.headersSent) {
-                res.status(500).json({ code: "📡 Service is Currently Unavailable" });
+                res.status(500).json({ code: "Service is Currently Unavailable" });
                 responseSent = true;
             }
             await cleanUpSession();
@@ -192,10 +192,10 @@ router.get('/', async (req, res) => {
     try {
         await GIFTED_PAIR_CODE();
     } catch (finalError) {
-        console.error("🔴 Final error:", finalError);
+        console.error("Final error:", finalError);
         await cleanUpSession();
         if (!responseSent && !res.headersSent) {
-            res.status(500).json({ code: "🔴 Service Error" });
+            res.status(500).json({ code: "Service Error" });
         }
     }
 });

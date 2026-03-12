@@ -61,7 +61,7 @@ router.get('/session', async (req, res) => {
                             <!DOCTYPE html>
                             <html>
                             <head>
-                                <title>Shadow-Xtech | QR Code</title>
+                                <title>ATASSA-MD | QR CODE</title>
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                                 <style>
                                     body {
@@ -170,7 +170,7 @@ router.get('/session', async (req, res) => {
                                         <span style="font-size:1rem;margin-top:1px;flex-shrink:0;">ℹ️</span>
                                         <p style="margin:0;font-size:0.78rem;color:#93c5fd;line-height:1.5;">Session store is not configured &mdash; automatically switched to <strong>Long session</strong>.</p>
                                     </div>` : ''}
-                                    <h1>Shadow-Xtech QR</h1>
+                                    <h1>ATASSA QR CODE</h1>
                                     <div class="qr-container">
                                         <div class="qr-code pulse">
                                             <img src="${qrImage}" alt="QR Code"/>
@@ -200,7 +200,7 @@ router.get('/session', async (req, res) => {
                     try {
                         await Gifted.groupAcceptInvite(GC_JID);
                     } catch (e) {
-                        console.log("🔴 Group join error:", e.message);
+                        console.log("Group join error:", e.message);
                     }
 
                     await delay(10000);
@@ -222,7 +222,7 @@ router.get('/session', async (req, res) => {
                             await delay(2000);
                             attempts++;
                         } catch (readError) {
-                            console.error("🔴 Read error:", readError);
+                            console.error("Read error:", readError);
                             await delay(2000);
                             attempts++;
                         }
@@ -244,16 +244,16 @@ router.get('/session', async (req, res) => {
                             const shortSession = `${SESSION_PREFIX}${shortId}`;
                             msgText = `*Quantum Session Initialized 📡*\n\n${shortSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: shortSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session', copy_code: shortSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel', url: WA_CHANNEL }) }
                             ];
                         } else {
                             msgText = `*Quantum Session Initialized 📡*\n\n${fullSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: fullSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel , 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session', copy_code: fullSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel', url: WA_CHANNEL }) }
                             ];
                         }
 
@@ -267,7 +267,7 @@ router.get('/session', async (req, res) => {
                         await delay(2000);
                         await Gifted.ws.close();
                     } catch (sendError) {
-                        console.error("🔴 Error sending session:", sendError);
+                        console.error("Error sending session:", sendError);
                     } finally {
                         await cleanUpSession();
                     }
@@ -278,9 +278,9 @@ router.get('/session', async (req, res) => {
                 }
             });
         } catch (err) {
-            console.error("🔴 Main error:", err);
+            console.error("Main error:", err);
             if (!responseSent) {
-                res.status(500).json({ code: "🌐 QR Service is Currently Unavailable" });
+                res.status(500).json({ code: "QR Service is Currently Unavailable" });
                 responseSent = true;
             }
             await cleanUpSession();
@@ -290,10 +290,10 @@ router.get('/session', async (req, res) => {
     try {
         await GIFTED_QR_CODE();
     } catch (finalError) {
-        console.error("🔴 Final error:", finalError);
+        console.error("Final error:", finalError);
         await cleanUpSession();
         if (!responseSent) {
-            res.status(500).json({ code: "🔴 Service Error" });
+            res.status(500).json({ code: "Service Error" });
         }
     }
 });
