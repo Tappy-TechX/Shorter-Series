@@ -1,11 +1,15 @@
-const { giftedId, removeFile, safeGroupAcceptInvite } = require('../gift');
-const { SESSION_PREFIX, GC_JID } = require('../config');
+const { 
+    giftedId,
+    removeFile
+} = require('../gift');
+const { SESSION_PREFIX, GC_JID, BOT_REPO, WA_CHANNEL, MSG_FOOTER } = require('../config');
+const { isConfigured, saveSession } = require('../gift/sessionStore');
 const QRCode = require('qrcode');
 const express = require('express');
 const zlib = require('zlib');
 const path = require('path');
 const fs = require('fs');
-const router = express.Router();
+let router = express.Router();
 const pino = require("pino");
 const { sendButtons } = require('gifted-btns');
 const {
@@ -16,12 +20,48 @@ const {
     fetchLatestBaileysVersion
 } = require("@whiskeysockets/baileys");
 
-const sessionDir = path.join(__dirname, "sessions");
+const sessionDir = path.join(__dirname, "session");
 
-const buildQRPage = (qrImage) => `<!DOCTYPE html>
+router.get('/session', async (req, res) => {
+    const id = giftedId();
+    const sessionType = (req.query.type || 'short').toLowerCase();
+    let responseSent = false;
+    let sessionCleanedUp = false;
+
+    async function cleanUpSession() {
+        if (!sessionCleanedUp) {
+            await removeFile(path.join(sessionDir, id));
+            sessionCleanedUp = true;
+        }
+    }
+
+    async function GIFTED_QR_CODE() {
+        const { version } = await fetchLatestBaileysVersion();
+        console.log(version);
+        const { state, saveCreds } = await useMultiFileAuthState(path.join(sessionDir, id));
+        try {
+            let Gifted = giftedConnect({
+                version,
+                auth: state,
+                printQRInTerminal: false,
+                logger: pino({ level: "silent" }),
+                browser: Browsers.macOS("Desktop"),
+                connectTimeoutMs: 60000,
+                keepAliveIntervalMs: 30000
+            });
+
+            Gifted.ev.on('creds.update', saveCreds);
+            Gifted.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect, qr } = s;
+
+                if (qr && !responseSent) {
+                    const qrImage = await QRCode.toDataURL(qr);
+                    if (!res.headersSent) {
+                        res.send(`
+                            <!DOCTYPE html>
                             <html>
                             <head>
-                                <title>Shadow-Xtech | QR Scanner</title>
+                                <title>Shadow-Xtech | QR Code</title>
                                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                                 <style>
                                     body {
@@ -125,7 +165,12 @@ const buildQRPage = (qrImage) => `<!DOCTYPE html>
                             </head>
                             <body>
                                 <div class="container">
-                                    <h1>SHADOW QR CODE</h1>
+                                    ${(sessionType === 'short' && !isConfigured()) ? `
+                                    <div style="margin-bottom:18px;padding:12px 16px;border-radius:12px;border:1px solid rgba(96,165,250,0.3);background:rgba(30,58,138,0.25);display:flex;align-items:flex-start;gap:10px;text-align:left;">
+                                        <span style="font-size:1rem;margin-top:1px;flex-shrink:0;">ℹ️</span>
+                                        <p style="margin:0;font-size:0.78rem;color:#93c5fd;line-height:1.5;">Session store is not configured &mdash; automatically switched to <strong>Long session</strong>.</p>
+                                    </div>` : ''}
+                                    <h1>Shadow-Xtech QR</h1>
                                     <div class="qr-container">
                                         <div class="qr-code pulse">
                                             <img src="${qrImage}" alt="QR Code"/>
@@ -145,49 +190,19 @@ const buildQRPage = (qrImage) => `<!DOCTYPE html>
                                     });
                                 </script>
                             </body>
-                            </html>`;
-
-router.get('/', async (req, res) => {
-    const id = giftedId();
-    let responseSent = false;
-    let sessionCleanedUp = false;
-
-    async function cleanUpSession() {
-        if (!sessionCleanedUp) {
-            await removeFile(path.join(sessionDir, id));
-            sessionCleanedUp = true;
-        }
-    }
-
-    async function GIFTED_QR_CODE() {
-        const { version } = await fetchLatestBaileysVersion();
-        console.log(version);
-        const { state, saveCreds } = await useMultiFileAuthState(path.join(sessionDir, id));
-        try {
-            let Gifted = giftedConnect({
-                version,
-                auth: state,
-                printQRInTerminal: false,
-                logger: pino({ level: "silent" }),
-                browser: Browsers.macOS("Desktop"),
-                connectTimeoutMs: 60000,
-                keepAliveIntervalMs: 30000
-            });
-
-            Gifted.ev.on('creds.update', saveCreds);
-            Gifted.ev.on("connection.update", async (s) => {
-                const { connection, lastDisconnect, qr } = s;
-
-                if (qr && !responseSent) {
-                    const qrImage = await QRCode.toDataURL(qr);
-                    if (!res.headersSent) {
-                        res.send(buildQRPage(qrImage));
+                            </html>
+                        `);
                         responseSent = true;
                     }
                 }
 
                 if (connection === "open") {
-                    await safeGroupAcceptInvite(Gifted, GC_JID);
+                    try {
+                        await Gifted.groupAcceptInvite(GC_JID);
+                    } catch (e) {
+                        console.log("🔴 Group join error:", e.message);
+                    }
+
                     await delay(10000);
 
                     let sessionData = null;
@@ -207,7 +222,7 @@ router.get('/', async (req, res) => {
                             await delay(2000);
                             attempts++;
                         } catch (readError) {
-                            console.error("Read error:", readError);
+                            console.error("🔴 Read error:", readError);
                             await delay(2000);
                             attempts++;
                         }
@@ -221,33 +236,32 @@ router.get('/', async (req, res) => {
                     try {
                         let compressedData = zlib.gzipSync(sessionData);
                         let b64data = compressedData.toString('base64');
+                        const fullSession = SESSION_PREFIX + b64data;
+
+                        let msgText, msgButtons;
+                        if (isConfigured() && sessionType === 'short') {
+                            const shortId = await saveSession(fullSession);
+                            const shortSession = `${SESSION_PREFIX}${shortId}`;
+                            msgText = `*Quantum Session Initialized 📡*\n\n${shortSession}`;
+                            msgButtons = [
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: shortSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                            ];
+                        } else {
+                            msgText = `*Quantum Session Initialized 📡*\n\n${fullSession}`;
+                            msgButtons = [
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: fullSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel , 🌐', url: WA_CHANNEL }) }
+                            ];
+                        }
+
                         await sendButtons(Gifted, Gifted.user.id, {
                             title: '',
-                            text: SESSION_PREFIX + b64data,
-                            footer: `> *Powered By Tappy-TechX*`,
-                            buttons: [
-                                {
-                                    name: 'cta_copy',
-                                    buttonParamsJson: JSON.stringify({
-                                        display_text: '🔗 Copy Session',
-                                        copy_code: SESSION_PREFIX + b64data
-                                    })
-                                },
-                                {
-                                    name: 'cta_url',
-                                    buttonParamsJson: JSON.stringify({
-                                        display_text: '📂 Visit Bot Repo',
-                                        url: 'https://github.com/mauricegift/atassa'
-                                    })
-                                },
-                                {
-                                    name: 'cta_url',
-                                    buttonParamsJson: JSON.stringify({
-                                        display_text: '🌐 Join WaChannel',
-                                        url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10'
-                                    })
-                                }
-                            ]
+                            text: msgText,
+                            footer: MSG_FOOTER,
+                            buttons: msgButtons
                         });
 
                         await delay(2000);

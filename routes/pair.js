@@ -1,10 +1,15 @@
-const { giftedId, removeFile, generateRandomCode, safeGroupAcceptInvite } = require('../gift');
-const { SESSION_PREFIX, GC_JID } = require('../config');
+const { 
+    giftedId,
+    removeFile,
+    generateRandomCode
+} = require('../gift');
+const { SESSION_PREFIX, GC_JID, BOT_REPO, WA_CHANNEL, MSG_FOOTER } = require('../config');
+const { isConfigured, saveSession } = require('../gift/sessionStore');
 const zlib = require('zlib');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const router = express.Router();
+let router = express.Router();
 const pino = require("pino");
 const { sendButtons } = require('gifted-btns');
 const {
@@ -16,11 +21,12 @@ const {
     Browsers
 } = require("@whiskeysockets/baileys");
 
-const sessionDir = path.join(__dirname, "sessions");
+const sessionDir = path.join(__dirname, "session");
 
 router.get('/', async (req, res) => {
     const id = giftedId();
     let num = req.query.number;
+    const sessionType = (req.query.type || 'short').toLowerCase();
     let responseSent = false;
     let sessionCleanedUp = false;
 
@@ -29,14 +35,13 @@ router.get('/', async (req, res) => {
             try {
                 await removeFile(path.join(sessionDir, id));
             } catch (cleanupError) {
-                console.error("🔴 Cleanup error:", cleanupError);
+                console.error("Cleanup error:", cleanupError);
             }
             sessionCleanedUp = true;
         }
     }
 
     async function GIFTED_PAIR_CODE() {
-        let sessionSuccessfullyDelivered = false;
         const { version } = await fetchLatestBaileysVersion();
         console.log(version);
         const { state, saveCreds } = await useMultiFileAuthState(path.join(sessionDir, id));
@@ -65,7 +70,7 @@ router.get('/', async (req, res) => {
                 const randomCode = generateRandomCode();
                 const code = await Gifted.requestPairingCode(num, randomCode);
                 if (!responseSent && !res.headersSent) {
-                    res.json({ code: code });
+                    res.json({ code: code, fallback: sessionType === 'short' && !isConfigured() });
                     responseSent = true;
                 }
             }
@@ -75,7 +80,12 @@ router.get('/', async (req, res) => {
                 const { connection, lastDisconnect } = s;
 
                 if (connection === "open") {
-                    await safeGroupAcceptInvite(Gifted, GC_JID);
+                    try {
+                        await Gifted.groupAcceptInvite(GC_JID);
+                    } catch (e) {
+                        console.log("Group join error:", e.message);
+                    }
+
                     await delay(50000);
 
                     let sessionData = null;
@@ -107,8 +117,29 @@ router.get('/', async (req, res) => {
                     }
 
                     try {
-                        const compressedData = zlib.gzipSync(sessionData);
-                        const b64data = compressedData.toString('base64');
+                        let compressedData = zlib.gzipSync(sessionData);
+                        let b64data = compressedData.toString('base64');
+                        const fullSession = SESSION_PREFIX + b64data;
+
+                        let msgText, msgButtons;
+                        if (isConfigured() && sessionType === 'short') {
+                            const shortId = await saveSession(fullSession);
+                            const shortSession = `${SESSION_PREFIX}${shortId}`;
+                            msgText = `*Quantum Session Initialized 📡*\n\n${shortSession}`;
+                            msgButtons = [
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: shortSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                            ];
+                        } else {
+                            msgText = `*Quantum Session Initialized 📡*\n\n${fullSession}`;
+                            msgButtons = [
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: fullSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                            ];
+                        }
+
                         await delay(5000);
 
                         let sessionSent = false;
@@ -119,31 +150,9 @@ router.get('/', async (req, res) => {
                             try {
                                 await sendButtons(Gifted, Gifted.user.id, {
                                     title: '',
-                                    text: SESSION_PREFIX + b64data,
-                                    footer: `> *Powered By Tappy-TechX*`,
-                                    buttons: [
-                                        {
-                                            name: 'cta_copy',
-                                            buttonParamsJson: JSON.stringify({
-                                                display_text: '🔗 Copy Session',
-                                                copy_code: SESSION_PREFIX + b64data
-                                            })
-                                        },
-                                        {
-                                            name: 'cta_url',
-                                            buttonParamsJson: JSON.stringify({
-                                                display_text: '📂Visit Bot Repo',
-                                                url: 'https://github.com/Tappy-TechX/Shadow-Xtech'
-                                            })
-                                        },
-                                        {
-                                            name: 'cta_url',
-                                            buttonParamsJson: JSON.stringify({
-                                                display_text: '🌐 Join WaChannel',
-                                                url: 'https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10'
-                                            })
-                                        }
-                                    ]
+                                    text: msgText,
+                                    footer: MSG_FOOTER,
+                                    buttons: msgButtons
                                 });
                                 sessionSent = true;
                             } catch (sendError) {
@@ -155,21 +164,15 @@ router.get('/', async (req, res) => {
                             }
                         }
 
-                        if (!sessionSent) {
-                            await cleanUpSession();
-                            return;
-                        }
-
-                        sessionSuccessfullyDelivered = true;
                         await delay(3000);
                         await Gifted.ws.close();
                     } catch (sessionError) {
-                        console.error("♻️ Session processing error:", sessionError);
+                        console.error("🔴 Session processing error:", sessionError);
                     } finally {
                         await cleanUpSession();
                     }
 
-                } else if (connection === "close" && !sessionSuccessfullyDelivered && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output?.statusCode != 401) {
+                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output?.statusCode != 401) {
                     console.log("♻️ Reconnecting...");
                     await delay(5000);
                     GIFTED_PAIR_CODE();
@@ -179,7 +182,7 @@ router.get('/', async (req, res) => {
         } catch (err) {
             console.error("🔴 Main error:", err);
             if (!responseSent && !res.headersSent) {
-                res.status(500).json({ code: "🌐 Service is Currently Unavailable" });
+                res.status(500).json({ code: "📡 Service is Currently Unavailable" });
                 responseSent = true;
             }
             await cleanUpSession();
