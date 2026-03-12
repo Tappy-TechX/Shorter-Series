@@ -411,7 +411,10 @@
   </main>
 
   <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
+    // Note: The original HTML included a reference to an element with id='yr' in the footer, 
+    // which is now removed. I will comment out the line that sets its content for completeness, 
+    // though it won't cause an error since the element itself is gone.
+    // document.getElementById('yr').textContent = new Date().getFullYear();
 
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -442,6 +445,7 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('[data-anim]').forEach(el => observer.observe(el));
 
+    // Function to set a circular favicon programmatically
     (function setCircularFavicon(src) {
       const canvas = document.createElement('canvas');
       canvas.width = 64; canvas.height = 64;
@@ -490,7 +494,11 @@
     const copyText     = document.getElementById('copyText');
     const newCodeBtn   = document.getElementById('newCodeBtn');
 
+    // Initialize button state
+    submitBtn.disabled = false;
+
     phoneInput.addEventListener('input', () => {
+      // Strip non-digits
       phoneInput.value = phoneInput.value.replace(/\D/g, '');
       phoneError.classList.add('hidden');
       generalError.classList.add('hidden');
@@ -500,6 +508,7 @@
     function showPhoneError(msg) {
       phoneErrTxt.textContent = msg;
       phoneError.classList.remove('hidden');
+      // Apply shake animation to input and error message container
       phoneInput.classList.add('shake');
       phoneError.classList.add('shake');
       setTimeout(() => { phoneInput.classList.remove('shake'); phoneError.classList.remove('shake'); }, 450);
