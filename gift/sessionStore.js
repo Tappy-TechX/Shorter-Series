@@ -31,9 +31,9 @@ async function init(config) {
             });
             mongoModel = mongoose.models.GiftedSession || mongoose.model('GiftedSession', sessionSchema);
             storageBackend = 'mongodb';
-            console.log('📂 Session storage: MongoDB connected');
+            console.log('Session storage: MongoDB connected');
         } catch (e) {
-            console.error('🔴 MongoDB connection failed:', e.message);
+            console.error('MongoDB connection failed:', e.message);
         }
     } else if (dbType === 'postgresql') {
         try {
@@ -47,12 +47,12 @@ async function init(config) {
                 )
             `);
             storageBackend = 'postgresql';
-            console.log('📡 Session storage: PostgreSQL connected');
+            console.log('Session storage: PostgreSQL connected');
         } catch (e) {
-            console.error('🔴 PostgreSQL connection failed:', e.message);
+            console.error('PostgreSQL connection failed:', e.message);
         }
     } else {
-        console.log('🔴 Session storage: No DATABASE_URL set using inline zlib fallback');
+        console.log('Session storage: No DATABASE_URL set — using inline zlib fallback');
     }
 }
 
