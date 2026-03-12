@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>ATASSA MD | Pair Code Login</title>
-  <meta name="description" content="Link your WhatsApp account to Atassa-MD using a pair code. Fast, secure, and simple.">
+  <title>Shadow-Xtech | Pair Code</title>
+  <meta name="description" content="Link your WhatsApp account to Shadow-Xtech using a pair code. Fast, secure, and simple.">
   <meta name="theme-color" content="#7c3aed">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ATASSA MD | Pair Code Login">
-  <meta property="og:description" content="Link your WhatsApp with Atassa-MD using a pair code — no QR scan needed.">
-  <meta property="og:image" content="https://files.giftedtech.co.ke/image/u90mimage.jpg">
+  <meta property="og:title" content="Shadow-Xtech | Pair Code">
+  <meta property="og:description" content="Link your WhatsApp with Shadow-Xtech using a pair code no QR scan needed.">
+  <meta property="og:image" content="https://files.catbox.moe/kk7xdb.jpg">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:image" content="https://files.giftedtech.co.ke/image/u90mimage.jpg">
+  <meta name="twitter:image" content="https://files.catbox.moe/kk7xdb.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -45,13 +45,26 @@
       50%      { transform: translate(20px,-20px) scale(1.05); }
     }
 
+    /* Nav Bar Style (Floating/Glass Bottom Rounded - UPDATED TO MATCH FIRST EXAMPLE) */
     .nav-glass {
-      background: rgba(7,7,14,0.85);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 0 0 22px 22px;
+      background: rgba(7, 7, 14, 0.92); 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 0 0 22px 22px; /* Bottom rounded */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 58, 237, 0.1);
     }
+    
+    /* Sidebar Header Style (Bottom Rounded) */
+    .sidebar-header-glass {
+      background: rgba(7, 7, 14, 0.92); 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 0 0 16px 16px; 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(124, 58, 237, 0.05);
+    }
+
     .nav-link { position: relative; transition: color 0.2s ease; }
     .nav-link::after {
       content: '';
@@ -73,6 +86,7 @@
     .sidebar-link:hover { background: rgba(124,58,237,0.12); color: #c084fc; transform: translateX(4px); }
     .sidebar-link i { width: 18px; text-align: center; font-size: 0.9rem; }
 
+    /* Sidebar transition remains the same */
     #sidebar { transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
     #sidebarOverlay { transition: opacity 0.3s ease; }
 
@@ -116,7 +130,7 @@
       border-radius: 22px;
       box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.08);
     }
-
+    
     .input-field {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
@@ -181,83 +195,109 @@
     [data-anim="fade-up"]    { opacity: 0; transform: translateY(28px); }
     [data-anim="zoom-in"]    { opacity: 0; transform: scale(0.9); }
     [data-anim="slide-left"] { opacity: 0; transform: translateX(-28px); }
-    [data-anim="slide-right"]{ opacity: 0; transform: translateX(28px); }
+    [data-anim]="slide-right"{ opacity: 0; transform: translateX(28px); }
     [data-anim].in-view { opacity: 1; transform: translateY(0) scale(1) translateX(0); }
     [data-delay="1"] { transition-delay: 0.1s; }
     [data-delay="2"] { transition-delay: 0.2s; }
     [data-delay="3"] { transition-delay: 0.3s; }
     [data-delay="4"] { transition-delay: 0.4s; }
+    
+    /* Sidebar Content Container Style (Glassy section inside sidebar) */
+    .sidebar-content-container {
+        background: rgba(15, 15, 26, 0.95); 
+        border-top: 1px solid rgba(255, 255, 255, 0.08); 
+        border-radius: 0 0 16px 16px; 
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2); 
+        padding: 1rem; 
+        margin: 0.5rem 0.75rem 0 0.75rem; 
+        flex-grow: 1; 
+        overflow-y: auto; 
+    }
   </style>
 </head>
 <body>
   <div class="blob w-96 h-96 bg-purple-800/18 top-[-80px] left-[-80px]" style="animation:blobFloat 14s ease-in-out infinite;"></div>
   <div class="blob w-72 h-72 bg-violet-600/12 bottom-[10%] right-[-60px]" style="animation:blobFloat 18s ease-in-out 5s infinite;"></div>
 
-  <nav class="nav-glass sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-5 h-12 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3 no-underline">
-        <img src="https://files.giftedtech.co.ke/image/u90mimage.jpg" alt="ATASSA" class="w-8 h-8 rounded-full border border-purple-500/50 object-cover" style="transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 14px rgba(168,85,247,0.6)'" onmouseout="this.style.boxShadow='none'">
-        <span class="text-base font-bold gradient-text">ATASSA-MD</span>
+  <!-- Navigation bar (Floating/Glass, Bottom Rounded - MODIFIED) -->
+  <nav class="nav-glass sticky top-0 z-50 mx-auto mt-3 px-5 h-14 flex items-center justify-between max-w-6xl" style="width: calc(100% - 40px);">
+    <a href="/" class="flex items-center gap-3 no-underline">
+      <img src="https://files.catbox.moe/kk7xdb.jpg" alt="ATASSA" class="w-8 h-8 rounded-full border border-purple-500/50 object-cover" style="transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 14px rgba(168,85,247,0.6)'" onmouseout="this.style.boxShadow='none'">
+      <span class="text-base font-bold gradient-text">SHADOW-XTECH</span>
+    </a>
+    <div class="hidden md:flex items-center gap-7">
+      <a href="https://github.com/Tappy-TechX/Shadow-Xtech" target="_blank" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fab fa-github text-xs"></i> Source Code</a>
+      <a href="/pair" class="nav-link text-purple-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fas fa-link text-xs"></i> Pair Code</a>
+      <a href="/qr" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fas fa-qrcode text-xs"></i> QR Code</a>
+      <a href="https://t.me/blacktappy" target="_blank" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fab fa-telegram text-xs"></i> Support</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/qr" class="hidden md:inline-flex btn btn-ghost py-2 px-4 text-xs">
+        <span class="icon-animated"><i class="fas fa-qrcode"></i></span> Use QR Instead
       </a>
-      <div class="hidden md:flex items-center gap-7">
-        <a href="https://github.com/mauricegift/atassa" target="_blank" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fab fa-github text-xs"></i> Source Code</a>
-        <a href="/pair" class="nav-link text-purple-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fas fa-link text-xs"></i> Pair Code</a>
-        <a href="/qr" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fas fa-qrcode text-xs"></i> QR Code</a>
-        <a href="https://t.me/mauricegift" target="_blank" class="nav-link text-gray-400 text-sm font-medium no-underline flex items-center gap-1.5"><i class="fab fa-telegram text-xs"></i> Support</a>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="/qr" class="hidden md:inline-flex btn btn-ghost py-2 px-4 text-xs">
-          <span class="icon-animated"><i class="fas fa-qrcode"></i></span> Use QR Instead
-        </a>
-        <button id="menuBtn" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/8 text-gray-500 outline-none focus:outline-none focus:ring-0" style="transition:background 0.18s, color 0.18s;">
-          <i class="fas fa-bars" id="menuIcon"></i>
-        </button>
-      </div>
+      <button id="menuBtn" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/8 text-gray-500 outline-none focus:outline-none focus:ring-0" style="transition:background 0.18s,color 0.18s;">
+        <i class="fas fa-bars" id="menuIcon"></i>
+      </button>
     </div>
   </nav>
 
   <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none"></div>
-  <aside id="sidebar" class="fixed top-0 left-0 z-50 h-full w-72 bg-[#0a0a14] border-r border-white/6 flex flex-col pt-5 pb-8 transform -translate-x-full rounded-r-3xl">
-    <div class="flex items-center justify-between px-5 mb-6">
+  
+  <!-- Sidebar (Unchanged) -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-50 h-full w-72 bg-[#0a0a14] flex flex-col transform -translate-x-full">
+    
+    <!-- Sidebar Header (Glass Effect, Bottom Rounded) -->
+    <div class="sidebar-header-glass flex items-center justify-between px-5 mb-0 h-14 flex-shrink-0"> 
       <a href="/" class="flex items-center gap-2.5 no-underline">
-        <img src="https://files.giftedtech.co.ke/image/u90mimage.jpg" alt="ATASSA" class="w-8 h-8 rounded-full border border-purple-500/50 object-cover">
-        <span class="text-sm font-bold gradient-text">ATASSA-MD</span>
+        <img src="https://files.catbox.moe/kk7xdb.jpg" alt="ATASSA" class="w-8 h-8 rounded-full border border-purple-500/50 object-cover">
+        <span class="text-sm font-bold gradient-text">SHADOW-XTECH</span>
       </a>
       <button id="closeBtn" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-gray-400" style="transition:background 0.18s,color 0.18s;">
         <i class="fas fa-times text-sm"></i>
       </button>
     </div>
-    <div class="px-3 flex-1 space-y-1">
-      <a href="/" class="sidebar-link"><i class="fas fa-home"></i> Home</a>
-      <a href="/pair" class="sidebar-link" style="background:rgba(124,58,237,0.1);color:#c084fc;"><i class="fas fa-link"></i> Pair Code</a>
-      <a href="/qr" class="sidebar-link"><i class="fas fa-qrcode"></i> QR Code</a>
-      <a href="https://github.com/mauricegift/atassa" target="_blank" class="sidebar-link"><i class="fab fa-github"></i> Source Code</a>
-      <a href="https://t.me/mauricegift" target="_blank" class="sidebar-link"><i class="fab fa-telegram"></i> Support</a>
-      <a href="https://whatsapp.com/channel/0029Vb6lNd511ulWbxu1cT3A" target="_blank" class="sidebar-link"><i class="fab fa-whatsapp"></i> WA Channel</a>
+    <!-- END HEADER -->
+    
+    <!-- Sidebar Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <div class="sidebar-content-container"> 
+          <div class="space-y-1"> 
+            <a href="/" class="sidebar-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/pair" class="sidebar-link" style="background:rgba(124,58,237,0.1);color:#c084fc;"><i class="fas fa-link"></i> Pair Code</a>
+            <a href="/qr" class="sidebar-link"><i class="fas fa-qrcode"></i> QR Code</a>
+            <a href="https://github.com/Tappy-TechX/Shadow-Xtech" target="_blank" class="sidebar-link"><i class="fab fa-github"></i> Source Code</a>
+            <a href="https://t.me/blacktappy" target="_blank" class="sidebar-link"><i class="fab fa-telegram"></i> Support</a>
+            <a href="https://whatsapp.com/channel/0029VasHgfG4tRrwjAUyTs10" target="_blank" class="sidebar-link"><i class="fab fa-whatsapp"></i> WA Channel</a>
+          </div>
+        </div>
     </div>
-    <div class="px-5 pt-5 border-t border-white/6">
-      <p class="text-gray-600 text-xs">Powered by Gifted Tech</p>
-    </div>
+
   </aside>
 
   <main class="relative z-10">
     <section class="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-5 py-12">
+      
+      <!-- Main Content Container (Grouping Image/Header and Card) -->
       <div class="w-full max-w-md">
 
-        <div class="text-center mb-8" data-anim="fade-up">
-          <div class="flex justify-center mb-4">
-            <div class="relative">
-              <img src="https://files.giftedtech.co.ke/image/u90mimage.jpg" alt="ATASSA" class="w-20 h-20 rounded-full border-2 border-purple-500/60 object-cover" style="box-shadow:0 0 0 6px rgba(124,58,237,0.1),0 0 30px rgba(124,58,237,0.25);">
-              <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#0a0a14] rounded-full border border-purple-500/40 flex items-center justify-center">
-                <i class="fas fa-link text-purple-400 text-xs"></i>
-              </span>
-            </div>
-          </div>
-          <h1 class="text-2xl font-bold gradient-text mb-1">Pair Code Login</h1>
-          <p class="text-gray-500 text-sm">Enter your WhatsApp number — no + sign needed</p>
-        </div>
-
+        <!-- The Card containing the form/result -->
         <div class="card p-7" data-anim="zoom-in" data-delay="1">
+          
+          <!-- HEADER INSIDE CARD -->
+          <div class="text-center mb-6" data-anim="fade-up">
+            <div class="flex justify-center mb-4">
+              <div class="relative">
+                <img src="https://files.catbox.moe/kk7xdb.jpg" alt="ATASSA" class="w-20 h-20 rounded-full border-2 border-purple-500/60 object-cover" style="box-shadow:0 0 0 6px rgba(124,58,237,0.1),0 0 30px rgba(124,58,237,0.25);">
+                <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#0a0a14] rounded-full border border-purple-500/40 flex items-center justify-center">
+                  <i class="fas fa-link text-purple-400 text-xs"></i>
+                </span>
+              </div>
+            </div>
+            <h1 class="text-2xl font-bold gradient-text mb-1">PairSync Login 🌐</h1>
+            <p class="text-gray-500 text-sm">Enter your WhatsApp number (without + sign)</p>
+          </div>
+          <!-- END HEADER INSIDE CARD -->
+
           <div id="formSection">
             <div class="mb-5">
               <label for="phoneNumber" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Phone Number</label>
@@ -278,7 +318,7 @@
               </p>
             </div>
 
-            <div class="mb-5">
+            <div class="mb-6">
               <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Session Type</label>
               <div class="flex rounded-xl overflow-hidden border border-white/10 bg-white/[0.03]">
                 <button type="button" id="typeShort" onclick="selectType('short')"
@@ -368,26 +408,13 @@
     </section>
 
     <div class="divider-line"></div>
-    <footer class="py-8 px-5 bg-[#040408]">
-      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <a href="/" class="flex items-center gap-2 no-underline">
-          <img src="https://files.giftedtech.co.ke/image/u90mimage.jpg" alt="ATASSA" class="w-6 h-6 rounded-full border border-purple-500/40 object-cover">
-          <span class="text-xs font-bold gradient-text">ATASSA-MD</span>
-        </a>
-        <p class="text-gray-700 text-xs text-center">
-          &copy; <span id="yr"></span> ATASSA-MD &mdash; Built by <a href="https://github.com/mauricegift" target="_blank" class="text-purple-400 no-underline font-medium" style="transition:color 0.18s;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='#a855f7'">Gifted Tech</a>
-        </p>
-        <div class="flex gap-2">
-          <a href="https://github.com/mauricegift/atassa" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
-          <a href="https://t.me/mauricegift" target="_blank" class="social-icon"><i class="fab fa-telegram"></i></a>
-          <a href="https://whatsapp.com/channel/0029Vb6lNd511ulWbxu1cT3A" target="_blank" class="social-icon"><i class="fab fa-whatsapp"></i></a>
-        </div>
-      </div>
-    </footer>
   </main>
 
   <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
+    // Note: The original HTML included a reference to an element with id='yr' in the footer, 
+    // which is now removed. I will comment out the line that sets its content for completeness, 
+    // though it won't cause an error since the element itself is gone.
+    // document.getElementById('yr').textContent = new Date().getFullYear();
 
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -418,6 +445,7 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('[data-anim]').forEach(el => observer.observe(el));
 
+    // Function to set a circular favicon programmatically
     (function setCircularFavicon(src) {
       const canvas = document.createElement('canvas');
       canvas.width = 64; canvas.height = 64;
@@ -466,7 +494,11 @@
     const copyText     = document.getElementById('copyText');
     const newCodeBtn   = document.getElementById('newCodeBtn');
 
+    // Initialize button state
+    submitBtn.disabled = false;
+
     phoneInput.addEventListener('input', () => {
+      // Strip non-digits
       phoneInput.value = phoneInput.value.replace(/\D/g, '');
       phoneError.classList.add('hidden');
       generalError.classList.add('hidden');
@@ -476,6 +508,7 @@
     function showPhoneError(msg) {
       phoneErrTxt.textContent = msg;
       phoneError.classList.remove('hidden');
+      // Apply shake animation to input and error message container
       phoneInput.classList.add('shake');
       phoneError.classList.add('shake');
       setTimeout(() => { phoneInput.classList.remove('shake'); phoneError.classList.remove('shake'); }, 450);
