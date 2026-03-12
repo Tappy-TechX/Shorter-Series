@@ -244,16 +244,16 @@ router.get('/session', async (req, res) => {
                             const shortSession = `${SESSION_PREFIX}${shortId}`;
                             msgText = `*Quantum Session Initialized 📡*\n\n${shortSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: shortSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session   🔗', copy_code: shortSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo   📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel   🌐', url: WA_CHANNEL }) }
                             ];
                         } else {
                             msgText = `*Quantum Session Initialized 📡*\n\n${fullSession}`;
                             msgButtons = [
-                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session 🔗', copy_code: fullSession }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo 📂', url: BOT_REPO }) },
-                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel 🌐', url: WA_CHANNEL }) }
+                                { name: 'cta_copy', buttonParamsJson: JSON.stringify({ display_text: 'Copy Session   🔗', copy_code: fullSession }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Visit Bot Repo   📂', url: BOT_REPO }) },
+                                { name: 'cta_url', buttonParamsJson: JSON.stringify({ display_text: 'Join WaChannel   🌐', url: WA_CHANNEL }) }
                             ];
                         }
 
