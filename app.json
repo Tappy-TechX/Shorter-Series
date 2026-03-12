@@ -1,0 +1,17 @@
+{
+    "name": "Shadow-Xtech Session",
+    "description": "Web Session Generator",
+    "logo": "https://files.catbox.moe/kk7xdb.jpg",
+    "repository": "https://github.com/Tappy-TechX/Shorter-Series",
+    "keywords": ["Tappy-TechX"],
+    "success_url": "/", 
+    "buildpacks": [{ "url": "https://github.com/heroku/heroku-buildpack-nodejs#latest" } ],
+    "env": {      
+      "PORT": {
+        "description": "Port for web app.4000,5000,3000... any!",
+        "value": "50900",
+        "required": false 
+      }
+    }   
+
+}
